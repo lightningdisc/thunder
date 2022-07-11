@@ -23,7 +23,7 @@ class Help(commands.Cog):
         `-dontask`
         `-known
         """)
-        await message.send(embed=embed)
+        await message.channel.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Help(bot))

@@ -7,14 +7,14 @@ class Support(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.content.startswith("!!support"):
+        if message.content == "!!support":
             embed = discord.Embed(title="How can we help you?", description=
             """
             How can we help you? *I need help* is not a valid question. Please state specifically with what you need help with.
             """)
-            await message.send(embed=embed)
+            await message.channel.send(embed=embed)
             return
-        if message.content.startswith("!!bug"):
+        if message.content == "!!bug":
             embed = discord.Embed(title="Error", description="So you found an bug in Lightning? Please follow the format below to report it:")
             embed.add_field(name="How to Report:", value=
             """
@@ -27,9 +27,9 @@ class Support(commands.Cog):
 
             **Do NOT share the bug with anyone else BESIDES the Lightning Team and the Administrators.**
             """)
-            await message.send(embed=embed)
+            await message.channel.send(embed=embed)
             return
-        if message.content.startswith("!!hunter"):
+        if message.content == "!!hunter":
             embed = discord.Embed(title="Bug Hunter", description=
             """
             The bug hunter role is for the peole who find bugs in our bot to make the bot better.
@@ -45,15 +45,15 @@ class Support(commands.Cog):
 
             **If you abuse this in ways such as attemping to get clout/attention from the developers or bragging about the role **WILL** be removed.**
             """)
-            await message.send(embed=embed)
+            await message.channel.send(embed=embed)
             return
-        if message.content.startswith("!!dontask"):
+        if message.content == "!!dontask":
             embed = discord.Embed(title="Don't ask to ask to ask", description="Just ask.")
-            await message.send(embed=embed)
+            await message.channel.send(embed=embed)
             return
-        if message.content.startswith("!!known"):
+        if message.content == "!!known":
             embed = discord.Embed(title="Known Bugs.", description="This bug is already known, no need to report it again.")
-            await message.send(embed=embed)
+            await message.channel.send(embed=embed)
             return
             
 
