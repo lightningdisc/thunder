@@ -14,7 +14,7 @@ class Support(commands.Cog):
             """)
             await message.channel.send(embed=embed)
             return
-        if message.content == "!!bug":
+        if message.content == "-bug":
             embed = discord.Embed(title="Error", description="So you found an bug in Lightning? Please follow the format below to report it:")
             embed.add_field(name="How to Report:", value=
             """
