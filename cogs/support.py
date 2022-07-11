@@ -7,7 +7,7 @@ class Support(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.content == "!!support":
+        if message.content == "-support":
             embed = discord.Embed(title="How can we help you?", description=
             """
             How can we help you? *I need help* is not a valid question. Please state specifically with what you need help with.
@@ -29,7 +29,7 @@ class Support(commands.Cog):
             """)
             await message.channel.send(embed=embed)
             return
-        if message.content == "!!hunter":
+        if message.content == "-hunter":
             embed = discord.Embed(title="Bug Hunter", description=
             """
             The bug hunter role is for the peole who find bugs in our bot to make the bot better.
@@ -47,11 +47,11 @@ class Support(commands.Cog):
             """)
             await message.channel.send(embed=embed)
             return
-        if message.content == "!!dontask":
+        if message.content == "-dontask":
             embed = discord.Embed(title="Don't ask to ask to ask", description="Just ask.")
             await message.channel.send(embed=embed)
             return
-        if message.content == "!!known":
+        if message.content == "-known":
             embed = discord.Embed(title="Known Bugs.", description="This bug is already known, no need to report it again.")
             await message.channel.send(embed=embed)
             return
