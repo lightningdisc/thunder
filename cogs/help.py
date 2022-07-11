@@ -6,7 +6,7 @@ class Help(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def help(self, ctx):
+    async def help(self, message):
         embed = discord.Embed(title="Help:", description="Help page for Thunder.")
         embed.add_field(name="General Commands.", value=
         """
@@ -23,7 +23,7 @@ class Help(commands.Cog):
         `-dontask`
         `-known
         """)
-        await ctx.send(embed=embed)
+        await message.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Help(bot))

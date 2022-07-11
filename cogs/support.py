@@ -6,13 +6,13 @@ class Support(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, ctx, message):
+    async def on_message(self, message):
         if message.content.startswith("!!support"):
             embed = discord.Embed(title="How can we help you?", description=
             """
             How can we help you? *I need help* is not a valid question. Please state specifically with what you need help with.
             """)
-            await ctx.send(embed=embed)
+            await message.send(embed=embed)
             return
         if message.content.startswith("!!bug"):
             embed = discord.Embed(title="Error", description="So you found an bug in Lightning? Please follow the format below to report it:")
@@ -27,7 +27,7 @@ class Support(commands.Cog):
 
             **Do NOT share the bug with anyone else BESIDES the Lightning Team and the Administrators.**
             """)
-            await ctx.send(embed=embed)
+            await message.send(embed=embed)
             return
         if message.content.startswith("!!hunter"):
             embed = discord.Embed(title="Bug Hunter", description=
@@ -45,15 +45,15 @@ class Support(commands.Cog):
 
             **If you abuse this in ways such as attemping to get clout/attention from the developers or bragging about the role **WILL** be removed.**
             """)
-            await ctx.send(embed=embed)
+            await message.send(embed=embed)
             return
         if message.content.startswith("!!dontask"):
             embed = discord.Embed(title="Don't ask to ask to ask", description="Just ask.")
-            await ctx.send(embed=embed)
+            await message.send(embed=embed)
             return
         if message.content.startswith("!!known"):
             embed = discord.Embed(title="Known Bugs.", description="This bug is already known, no need to report it again.")
-            await ctx.send(embed=embed)
+            await message.send(embed=embed)
             return
             
 
