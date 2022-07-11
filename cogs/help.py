@@ -17,11 +17,11 @@ class Help(commands.Cog):
         """)
         embed.add_field(name="Tags", value=
         """
-        `!!support`
-        `!!bug`
-        `!!hunter`
-        `!!dontask`
-        `!!known
+        `-support`
+        `-bug`
+        `-hunter`
+        `-dontask`
+        `-known
         """)
         await ctx.send(embed=embed)
 
