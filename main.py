@@ -22,6 +22,12 @@ for files in os.listdir("./cogs"):
 async def ping(ctx):
     await ctx.respond("Pong!")
 
+@bot.slash_command(description="Sends a link to Lightning's Docs")
+async def docs(ctx):
+    embed = discord.Embed(title="Docs", description="Click [here](https://docs.lightning-bot.xyz) for documentation.")
+    embed.set_footer(text="Brought to you by Thunder")
+    await ctx.respond(embed=embed)
+
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
