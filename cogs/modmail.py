@@ -6,10 +6,7 @@ from discord.ui import View, Button, Modal, InputText
 import os
 import random
 from datetime import datetime
-
-# REDEFINE AS NEEDED
-maindb = mongo_client.thunder
-dbColl = maindb["test"]
+from config import db_collection
 
 class modmail(commands.Cog):
     def __init__(self, bot):
@@ -34,9 +31,9 @@ class modmail(commands.Cog):
             }
             mmCategory = await guild.create_category(name="modmail", overwrites=overwrites)
             mmChannel = await guild.create_text_channel(name="modmail-logs", category=mmCategory, overwrites=overwrites)
-            dbColl.insert_one({"_id": ctx.guild.id})
-            dbColl.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
-            dbColl.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
+            db_collection.insert_one({"_id": ctx.guild.id})
+            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
+            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
             await ctx.respond("Channels made!")
             await asyncio.sleep(1)
             embed = discord.Embed(title="Modmail Logs", description="Logs will be recorded here!")
@@ -48,9 +45,9 @@ class modmail(commands.Cog):
             mmChannel = logchannel
             mmCategory = mmChannel.category
             print(mmCategory)
-            dbColl.insert_one({"_id": ctx.guild.id})
-            dbColl.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
-            dbColl.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
+            db_collection.insert_one({"_id": ctx.guild.id})
+            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
+            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
             await ctx.respond("This channel must be under a cateogory")
             await ctx.respond("Channels made!")
             await asyncio.sleep(1)
@@ -64,7 +61,7 @@ class modmail(commands.Cog):
     async def open_ticket(self, ctx, reason):
         await ctx.defer()
         guild = self.bot.get_guild(int(guild_id))
-        data = dbColl.find({"_id": int(guild_id)})
+        data = db_collection.find({"_id": int(guild_id)})
 
         overwrites = {
                 guild.default_role: discord.PermissionOverwrite(read_messages=False)
@@ -79,7 +76,7 @@ class modmail(commands.Cog):
         randID = random.randint(1000, 9999)
         ticketChannel = await category.create_text_channel(name=f"ticket {randID}", overwrites=overwrites)
         ticketChannelTarget = self.bot.get_channel(ticketChannel.id)
-        dbColl.insert_one({"_id": ctx.author.id, "ticketID": ticketChannel.id})
+        db_collection.insert_one({"_id": ctx.author.id, "ticketID": ticketChannel.id})
 
         async def btn_callback(interaction):
             
@@ -104,7 +101,7 @@ class modmail(commands.Cog):
             os.remove(fileName)
 
             await ticketChannelTarget.delete()  
-            dbColl.delete_one({"_id": ctx.author.id})
+            db_collection.delete_one({"_id": ctx.author.id})
             
             deleteEmbed = discord.Embed(title="Ticket Closed!", description="Your ticket has been closed. We hope your issue was resolved.")
             deleteEmbed.set_footer(text="Brought to you by Thunder")
@@ -128,7 +125,7 @@ class modmail(commands.Cog):
             os.remove(fileName)
 
             await ticketChannelTarget.delete()  
-            dbColl.delete_one({"_id": ctx.author.id})   
+            db_collection.delete_one({"_id": ctx.author.id})   
                     
         close_btn = Button(label="Close", style=discord.ButtonStyle.red)
         view = View()
@@ -150,7 +147,7 @@ class modmail(commands.Cog):
     @discord.option(name="anonymous", description="toggle whether the message is anonymous. True by default.", required=False, default=True)
     @commands.dm_only()
     async def ticket_send(self, ctx, message, anonymous):
-        data = dbColl.find({"_id": ctx.author.id})
+        data = db_collection.find({"_id": ctx.author.id})
         async for user in data:
             if user["_id"] == ctx.author.id:
                 ticket = self.bot.get_channel(user["ticketID"])
@@ -172,7 +169,7 @@ class modmail(commands.Cog):
         if ctx.author not in guild.members:
             return await ctx.respond("This command can only be used by bot admins!")  
         elif ctx.author in guild.members:
-            ticketData = dbColl.find({"ticketID": ctx.channel.id})
+            ticketData = db_collection.find({"ticketID": ctx.channel.id})
             async for users in ticketData:
                 user = self.bot.get_user(users["_id"])
             embed = discord.Embed(title=f"{ctx.author} sends a message:", description=message)
