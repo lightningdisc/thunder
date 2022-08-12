@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from main import mongo_client, guild_id
+from main import guild_id
 import asyncio
 from discord.ui import View, Button, Modal, InputText
 import os
