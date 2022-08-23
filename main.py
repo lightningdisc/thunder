@@ -10,7 +10,7 @@ guild_id = os.getenv('COMMS_GUILD_ID')
 mongo_client = motor.motor_asyncio.AsyncIOMotorClient(mongo_string)
 
 intents = discord.Intents.all()
-bot = discord.Bot(intents=intents)
+bot = discord.Bot(intents=intents, help_command=None)
 
 for files in os.listdir("./cogs"):
     if files.endswith(".py"):

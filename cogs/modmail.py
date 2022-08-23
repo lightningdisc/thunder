@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from main import guild_id
 import asyncio
-from discord.ui import View, Button, Modal, InputText
+from discord.ui import View, Button
 import os
 import random
 from datetime import datetime
@@ -31,9 +31,9 @@ class modmail(commands.Cog):
             }
             mmCategory = await guild.create_category(name="modmail", overwrites=overwrites)
             mmChannel = await guild.create_text_channel(name="modmail-logs", category=mmCategory, overwrites=overwrites)
-            db_collection.insert_one({"_id": ctx.guild.id})
-            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
-            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
+            await db_collection.insert_one({"_id": ctx.guild.id})
+            await db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
+            await db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
             await ctx.respond("Channels made!")
             await asyncio.sleep(1)
             embed = discord.Embed(title="Modmail Logs", description="Logs will be recorded here!")
@@ -45,10 +45,10 @@ class modmail(commands.Cog):
             mmChannel = logchannel
             mmCategory = mmChannel.category
             print(mmCategory)
-            db_collection.insert_one({"_id": ctx.guild.id})
-            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
-            db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
-            await ctx.respond("This channel must be under a cateogory")
+            await db_collection.insert_one({"_id": ctx.guild.id})
+            await db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmChannel": mmChannel.id}}, upsert=True)
+            await db_collection.update_one({"_id": ctx.guild.id}, {"$set": {"mmCategory": mmCategory.id}}, upsert=True)
+            await ctx.respond("This channel must be under a category")
             await ctx.respond("Channels made!")
             await asyncio.sleep(1)
             embed = discord.Embed(title="Modmail Logs", description="Logs will be recorded here!")
@@ -69,14 +69,14 @@ class modmail(commands.Cog):
             
         async for fields in data:
             category = fields["mmCategory"]
-            channel = fields["mmChannel"]
+            channelid = fields["mmChannel"]
         category = self.bot.get_channel(category)
-        channel = self.bot.get_channel(channel)
+        channel = self.bot.get_channel(channelid)
 
         randID = random.randint(1000, 9999)
         ticketChannel = await category.create_text_channel(name=f"ticket {randID}", overwrites=overwrites)
         ticketChannelTarget = self.bot.get_channel(ticketChannel.id)
-        db_collection.insert_one({"_id": ctx.author.id, "ticketID": ticketChannel.id})
+        await db_collection.insert_one({"_id": ctx.author.id, "ticketID": ticketChannel.id})
 
         async def btn_callback(interaction):
             
@@ -86,7 +86,7 @@ class modmail(commands.Cog):
             await interaction.response.send_message("Ticket Closed! this channel will be deleted momentarily.")
             await asyncio.sleep(1.75)
 
-            logEmbed = discord.Embed(title=f"Ticket {randID} closed.", description=f"**Reason For Opening:** {reason}")
+            logEmbed = discord.Embed(title=f"Ticket {randID} closed.", description=f"**Reason For Close:** {reason}")
             logEmbed.set_footer(text="Brought to you by Thunder")
             logEmbed.timestamp = datetime.now()
 
@@ -101,31 +101,7 @@ class modmail(commands.Cog):
             os.remove(fileName)
 
             await ticketChannelTarget.delete()  
-            db_collection.delete_one({"_id": ctx.author.id})
-            
-            deleteEmbed = discord.Embed(title="Ticket Closed!", description="Your ticket has been closed. We hope your issue was resolved.")
-            deleteEmbed.set_footer(text="Brought to you by Thunder")
-            await dmChannel.send(embed=deleteEmbed)
-
-            await interaction.response.send_message("Ticket Closed! this channel will be deleted momentarily.")
-            await asyncio.sleep(1.75)
-
-            logEmbed = discord.Embed(title=f"Ticket {randID} closed.", description=f"**Reason For Opening:** {reason}")
-            logEmbed.set_footer(text="Brought to you by Thunder")
-            logEmbed.timestamp = datetime.now()
-
-            fileName = "log.txt"
-            with open(fileName, "w") as file:
-                async for msg in ticketChannelTarget.history(limit=None):
-                    file.write(f"""{msg.created_at} - 
-    {msg.author.display_name}: 
-    {msg.clean_content}\n\n""")
-            file = discord.File(fileName)
-            await channel.send(embed=logEmbed, file=file)
-            os.remove(fileName)
-
-            await ticketChannelTarget.delete()  
-            db_collection.delete_one({"_id": ctx.author.id})   
+            await db_collection.delete_one({"_id": ctx.author.id})
                     
         close_btn = Button(label="Close", style=discord.ButtonStyle.red)
         view = View()
